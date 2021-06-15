@@ -6,7 +6,7 @@ interface ILinkedList<T> {
   append(data: T): void;
   prepend(data: T): void;
   insertAfter(after: T, data: T): void;
-  find(data: T): ListNode<T>;
+  find(data: T): ListNode<T> | null;
   toArray(): ListNode<T>[];
   remove(data: T): void;
   size(): number;
@@ -53,25 +53,26 @@ class LinkedList<T> implements ILinkedList<T> {
     const found = this.find(after);
 
     if (!found) {
-      return;
+      return null;
     }
 
     found.next = new ListNode(data, found.next);
   }
 
-  find(data: T) {
-    //Search a certain node by checking value in it, via callback
+  find(data: T): ListNode<T> | null {
+    //Search a certain by checking value in it, via callback
     if (!this.head) {
-      return;
+      return null;
     }
 
-    let current = this.head;
+    let current: ListNode<T> | null = this.head;
     while (current) {
       if (current.data === data) {
         return current;
       }
       current = current.next;
     }
+    return null;
   }
 
   toArray() {
@@ -90,7 +91,7 @@ class LinkedList<T> implements ILinkedList<T> {
   remove(data: T) {
     //Deletes an element in list by pointing data in it
     if (!this.head) {
-      return;
+      return null;
     }
 
     while (this.head && this.head.data === data) {
@@ -128,8 +129,7 @@ list.insertAfter('name', 'is');
 
 list.prepend(42);
 list.append(24);
-list; //?
 
 list.remove(42);
-list.remove(24);
-console.log(list.toArray());
+
+console.log(list.find(24));
