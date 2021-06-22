@@ -141,6 +141,6 @@ list.prepend(42);
 list.append(24);
 
 list.remove(42);
-
+list.size;
 console.log(list.mutate('My', 'Your'));
 console.log(list.toArray());
