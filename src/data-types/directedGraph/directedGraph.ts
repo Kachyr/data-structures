@@ -31,6 +31,8 @@ class Graph<T extends string> {
       const adjacentVertex = this.adjacencyList[vertex].pop();
       if (adjacentVertex) {
         this.removeEdge(vertex, adjacentVertex);
+      } else {
+        break;
       }
     }
     delete this.adjacencyList[vertex];
