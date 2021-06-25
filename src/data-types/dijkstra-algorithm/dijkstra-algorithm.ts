@@ -1,6 +1,6 @@
-type DGraph = { [key: string]: { [key: string]: number } };
+type DijkstraGraph = { [key: string]: { [key: string]: number } };
 
-const dijGraph: DGraph = {
+const testGraph: DijkstraGraph = {
   a: { b: 2, c: 1 },
   b: { a: 2, f: 7 },
   c: { a: 1, d: 5, e: 2 },
@@ -27,8 +27,12 @@ function findLowestCostNode(costTable: CostTable, processed: Array<string>) {
   return lowestNode;
 }
 const path: Array<string> = [];
-function shortPath(graph: DGraph, start: string, end: string) {
-  const path: any = {};
+function shortPath(graph: DijkstraGraph, start: string, end: string) {
+  // tracking path
+  let parents: any = { endNode: null };
+  for (let child in graph[start]) {
+    parents[child] = start;
+  }
 
   const costTable: CostTable = {};
   const processed: Array<string> = [];
@@ -37,7 +41,6 @@ function shortPath(graph: DGraph, start: string, end: string) {
     if (node !== start) {
       let value = graph[start][node];
       costTable[node] = value || Infinity;
-      path[start] = node;
     }
   });
   let node = findLowestCostNode(costTable, processed);
@@ -48,16 +51,27 @@ function shortPath(graph: DGraph, start: string, end: string) {
       let newCost = cost + neighbors[neighbor];
       if (newCost < costTable[neighbor]) {
         costTable[neighbor] = newCost;
-        path[neighbor] = node;
+        parents[neighbor] = node;
       }
     });
     processed.push(node);
     node = findLowestCostNode(costTable, processed);
   }
 
-  console.log(path);
+  //writing path into an array and formatting it
+  let path = [end];
+  let parent = parents[end];
+  while (parent) {
+    path.push(parent);
+    parent = parents[parent];
+  }
+  path.reverse();
 
-  return costTable;
+  return {
+    totalCostTable: costTable,
+    distance: costTable[end],
+    path: path
+  };
 }
 
-console.log(shortPath(dijGraph, 'a', 'e'));
+console.log(shortPath(testGraph, 'a', 'g'));
