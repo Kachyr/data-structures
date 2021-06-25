@@ -10,22 +10,19 @@ interface ILinkedList<T> {
   prepend(data: T): void;
   insertAfter(after: T, data: T): void;
   find(data: T): ListNode<T> | null;
-  toArray(): ListNode<T>[];
+  // toArray(): Generator<ListNode<T>, ListNode<T>[]>;
   remove(data: T): void;
   mutate(dataToMutate: T, data: T): void | null;
 }
 
 class LinkedList<T> implements ILinkedList<T> {
-  private head: ListNode<T> | null;
-  private tail: ListNode<T> | null;
+  private head: ListNode<T> | null = null;
+  private tail: ListNode<T> | null = null;
   private _length: number = 0;
 
-  constructor() {
-    this.head = null;
-    this.tail = null;
-  }
+  constructor() {}
 
-  public append(data: T) {
+  append(data: T) {
     //Appending element in list
     const node = new ListNode(data);
 
@@ -40,7 +37,7 @@ class LinkedList<T> implements ILinkedList<T> {
     this.tail = node;
   }
 
-  public prepend(data: T) {
+  prepend(data: T) {
     //Prepend element in list
     const node = new ListNode(data, this.head);
 
@@ -51,7 +48,7 @@ class LinkedList<T> implements ILinkedList<T> {
     }
   }
 
-  public insertAfter(after: T, data: T) {
+  insertAfter(after: T, data: T) {
     // inserting element in particular position
     const found = this.find(after);
 
@@ -62,7 +59,7 @@ class LinkedList<T> implements ILinkedList<T> {
     found.next = new ListNode(data, found.next);
   }
 
-  public find(data: T): ListNode<T> | null {
+  find(data: T): ListNode<T> | null {
     //Search a certain by checking value in it, via callback
     if (!this.head) {
       return null;
@@ -78,27 +75,24 @@ class LinkedList<T> implements ILinkedList<T> {
     return null;
   }
 
-  public mutate(dataToMutate: T, data: T) {
+  mutate(dataToMutate: T, data: T) {
     const foundedNode = this.find(dataToMutate);
     if (foundedNode) {
       foundedNode.mutateData(data);
     } else return null;
   }
 
-  public toArray() {
+  *toArray() {
     //Returns a list of nodes
-    const output = [];
     let current = this.head;
 
     while (current) {
-      output.push(current);
+      yield current;
       current = current.next;
     }
-
-    return output;
   }
 
-  public remove(data: T) {
+  remove(data: T) {
     //Deletes an element in list by pointing data in it
     if (!this.head) {
       return null;
@@ -122,19 +116,19 @@ class LinkedList<T> implements ILinkedList<T> {
     }
   }
 
-  public get size() {
+  get size() {
     return this._length;
   }
 }
 
 const list = new LinkedList();
-list.prepend('Hi');
+
 list.append('My');
 list.append('name');
 
 list.append('Slim');
 list.append('Floppa');
-
+list.prepend('Hi');
 list.insertAfter('name', 'is');
 
 list.prepend(42);
@@ -142,5 +136,6 @@ list.append(24);
 
 list.remove(42);
 list.size;
-console.log(list.mutate('My', 'Your'));
-console.log(list.toArray());
+list.mutate('My', 'Your');
+
+console.log(...list.toArray());

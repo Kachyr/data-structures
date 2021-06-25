@@ -3,11 +3,13 @@ class Graph<T extends string> {
   constructor() {
     this.adjacencyList = {};
   }
+
   addVertex(vertex: T) {
     if (!this.adjacencyList[vertex]) {
       this.adjacencyList[vertex] = [];
     }
   }
+
   addEdge(source: T, destination: T) {
     if (!this.adjacencyList[source]) {
       this.addVertex(source);
@@ -18,6 +20,7 @@ class Graph<T extends string> {
     this.adjacencyList[source].push(destination);
     this.adjacencyList[destination].push(source);
   }
+
   removeEdge(source: T, destination: T) {
     this.adjacencyList[source] = this.adjacencyList[source].filter(
       (vertex) => vertex !== destination
@@ -26,8 +29,9 @@ class Graph<T extends string> {
       (vertex) => vertex !== source
     );
   }
+
   removeVertex(vertex: T) {
-    while (this.adjacencyList[vertex]) {
+    while (this.adjacencyList[vertex]) {// can use forEach
       const adjacentVertex = this.adjacencyList[vertex].pop();
       if (adjacentVertex) {
         this.removeEdge(vertex, adjacentVertex);
